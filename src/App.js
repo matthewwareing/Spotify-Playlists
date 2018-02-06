@@ -48,7 +48,7 @@ class Playlist extends Component {
     let playlist = this.props.playlist;
     return (
       <div style={{ ...defaultStyle, display: 'inline-block', width: "25%" }}>
-        <img src={playlist.imageUrl} alt="playlist cover" style={{width: '60px'}}/>
+        <img src={playlist.imageUrl} alt="playlist cover" style={{ width: '60px' }} />
         <h3>{playlist.name}</h3>
         <ul>
           {playlist.songs.map(song => <li>{song.name}</li>)}
@@ -69,7 +69,7 @@ class App extends Component {
   componentDidMount() {
     let parsed = queryString.parse(window.location.search);
     let accessToken = parsed.access_token;
-    if(!accessToken)
+    if (!accessToken)
       return;
     fetch('https://api.spotify.com/v1/me', {
       headers: { 'Authorization': 'Bearer ' + accessToken }
@@ -111,7 +111,11 @@ class App extends Component {
             {playlistsToRender.map(playlist =>
               <Playlist playlist={playlist} />
             )}
-          </div> : <button onClick={() => window.location = 'http://localhost:8888/login'} style={{ padding: '20px', 'fontSize': '50px', 'marginTop': '20px' }}>Sign in with spotify</button>
+          </div> : <button onClick={() => {
+            window.location = window.location.includes('localhost') ? 'http://localhost:8888/login' : 'https://dry-coast-60388.herokuapp.com/login'
+          }
+          }
+            style={{ padding: '20px', 'fontSize': '50px', 'marginTop': '20px' }}>Sign in with spotify</button>
         }
       </div>
     );
