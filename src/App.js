@@ -93,11 +93,11 @@ class App extends Component {
         let playlistsPromise = allTracksDataPromises.then(trackDatas => {
           trackDatas.forEach((trackData, i) => {
             playlists[i].trackDatas = trackData.items
-            .map(item => item.track)
-            .map(trackData => ({
-              name: trackData.name,
-              duration: trackData.duration_ms / 1000
-            }))
+              .map(item => item.track)
+              .map(trackData => ({
+                name: trackData.name,
+                duration: trackData.duration_ms / 1000
+              }))
           })
           return playlists
         })
@@ -109,7 +109,7 @@ class App extends Component {
           return {
             name: item.name,
             imageUrl: item.images[0].url,
-            songs: item.trackDatas.slice(0,3)
+            songs: item.trackDatas.slice(0, 3)
           }
         })
       }))
@@ -118,10 +118,13 @@ class App extends Component {
     let playlistsToRender =
       this.state.user &&
         this.state.playlists
-        ? this.state.playlists.filter(playlist =>
-          playlist.name.toLowerCase().includes(
-            this.state.filterString.toLowerCase()))
-        : [];
+        ? this.state.playlists.filter(playlist => {
+          let matchesPlaylist = playlist.name.toLowerCase().includes(
+            this.state.filterString.toLowerCase())
+          let matchesSong = playlist.songs.find(song => song.name.toLowerCase().includes(this.state.filterString.toLowerCase()))
+
+          return matchesPlaylist || matchesSong
+        }) : []
 
     return (
       <div className="App">
