@@ -1,12 +1,7 @@
 html, body {
-  background-color: #333;
+  background-color: gray;
 }
 
-.App {
-  text-align: center;
-}
-
-h1 {
-  font-size: 54px;
-  color: #fff;
+body {
+  padding: 10%;
 }

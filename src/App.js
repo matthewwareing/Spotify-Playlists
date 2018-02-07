@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
+import 'reset-css/reset.css';
 import './App.css';
 import queryString from 'query-string';
 
 let defaultStyle = {
-  color: '#fff'
+  color: '#fff',
+  'font-family': 'Arial'
 };
+
+let counterStyle = {
+  ...defaultStyle,
+  width: "40%",
+  display: 'inline-block',
+  'marginBottom': '20px', 
+  'fontSize': '20px', 
+  'lineHeight': '30px'
+}
 
 class PlaylistCounter extends Component {
   render() {
+    let playlistCounterStyle = counterStyle
     return (
-      <div style={{ ...defaultStyle, width: "40%", display: 'inline-block' }}>
+      <div style={playlistCounterStyle}>
         <h2>{this.props.playlists.length} playlists</h2>
       </div>
     );
@@ -24,8 +36,14 @@ class HoursCounter extends Component {
     let totalDuration = allSongs.reduce((sum, eachSong) => {
       return sum + eachSong.duration;
     }, 0);
+    
+    let isTooLow = totalDuration/360 < 10;
+    let hoursCounterStyle = { ...counterStyle, 
+      color: isTooLow ? 'red' : 'white',
+      'fontWeight': isTooLow ? 'bold' : 'normal',
+    }
     return (
-      <div style={{ ...defaultStyle, width: "40%", display: 'inline-block' }}>
+      <div style={hoursCounterStyle}>
         <h2>{Math.round(totalDuration / 360)} hours</h2>
       </div>
     );
@@ -37,7 +55,7 @@ class Filter extends Component {
     return (
       <div style={defaultStyle}>
         <img />
-        <input type="text" onKeyUp={event => this.props.onTextChange(event.target.value)} />
+        <input type="text" onKeyUp={event => this.props.onTextChange(event.target.value)} style={{...defaultStyle, color:'black' ,'fontSize': '20px', padding: '10px'}}/>
       </div>
     );
   }
@@ -47,11 +65,11 @@ class Playlist extends Component {
   render() {
     let playlist = this.props.playlist;
     return (
-      <div style={{ ...defaultStyle, display: 'inline-block', width: "25%" }}>
+      <div style={{ ...defaultStyle, display: 'inline-block', width: "25%", padding: '10px', 'background-color': this.props.index % 2 ? '#C0C0C0' : '#808080'}}>
         <img src={playlist.imageUrl} alt="playlist cover" style={{ width: '60px' }} />
         <h3>{playlist.name}</h3>
-        <ul>
-          {playlist.songs.map(song => <li>{song.name}</li>)}
+        <ul style={{'marginTop': '10px', 'fontWeight': 'bold'}}>
+          {playlist.songs.map(song => <li style={{'paddingTop': '2px'}}>{song.name}</li>)}
         </ul>
       </div>
     );
@@ -130,14 +148,14 @@ class App extends Component {
       <div className="App">
         {this.state.user ?
           <div>
-            <h1 style={{ ...defaultStyle, 'fontSize': '54px' }}>
+            <h1 style={{ ...defaultStyle, 'fontSize': '54px', 'marginTop': '5px' }}>
               {this.state.user.name}'s Playlists
         </h1>
             <PlaylistCounter playlists={playlistsToRender} />
             <HoursCounter playlists={playlistsToRender} />
             <Filter onTextChange={text => this.setState({ filterString: text })} />
-            {playlistsToRender.map(playlist =>
-              <Playlist playlist={playlist} />
+            {playlistsToRender.map((playlist, i) =>
+              <Playlist playlist={playlist} index={i}/>
             )}
           </div> : <button onClick={() => {
             window.location = window.location.href.includes('localhost') ? 'http://localhost:8888/login' : 'https://better-playlists-backend123.herokuapp.com/login'
